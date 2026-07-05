@@ -1,7 +1,10 @@
 from core.assistant import Assistant
+
+
 def main():
-    jarvis=Assistant()
+    jarvis = Assistant()
     jarvis.start()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
