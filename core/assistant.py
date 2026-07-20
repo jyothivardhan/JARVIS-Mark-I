@@ -1,12 +1,12 @@
 from core.llm import LLM
-
+from commands.router import CommandRouter
 
 class Assistant:
 
     def __init__(self):
         self.name = "JARVIS"
         self.llm = LLM()
-
+        self.router = CommandRouter(self.llm)
     def start(self):
 
         print("=" * 40)
@@ -29,6 +29,7 @@ class Assistant:
                 print("\nGoodbye!\n")
                 break
 
-            response = self.llm.generate(command)
+            response = self.router.execute(command)
 
-            print(f"\nJARVIS > {response}\n")
+            if response:
+                print(f"\nJARVIS > {response}\n")

@@ -1,0 +1,5 @@
+ASSISTANT_NAME = "JARVIS"
+
+VERSION = "0.2"
+
+MODEL = "qwen3:4b"
