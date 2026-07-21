@@ -4,8 +4,9 @@ from commands.help import HelpCommand
 
 class CommandRouter:
 
-    def __init__(self, llm):
+    def __init__(self, llm, memory):
         self.llm = llm
+        self.memory= memory
 
         self.commands = {
             "help": HelpCommand.show,
@@ -23,9 +24,38 @@ class CommandRouter:
     def clear_screen(self):
         SystemCommands.clear()
         return None
-
+    
     def execute(self, command):
+        if command.startswith("remember "):
 
+            parts = command.split(maxsplit=2)
+
+            if len(parts) < 3:
+                return "Usage: remember <key> <value>"
+
+            key = parts[1]
+            value = parts[2]
+
+            self.memory.remember(key, value)
+
+            return f"I'll remember that. ({key} = {value})"
+
+
+        if command.startswith("recall "):
+
+            parts = command.split(maxsplit=1)
+
+            if len(parts) < 2:
+                return "Usage: recall <key>"
+
+            key = parts[1]
+
+            value = self.memory.recall(key)
+
+            if value is None:
+                return "I don't remember anything for that key."
+
+            return value
         command = command.strip().lower()
 
         if command in self.commands:

@@ -1,12 +1,14 @@
 from core.llm import LLM
 from commands.router import CommandRouter
+from memory.memory import Memory
 
 class Assistant:
 
     def __init__(self):
         self.name = "JARVIS"
         self.llm = LLM()
-        self.router = CommandRouter(self.llm)
+        self.memory = Memory()
+        self.router = CommandRouter(self.llm, self.memory)
     def start(self):
 
         print("=" * 40)
@@ -19,17 +21,17 @@ class Assistant:
             return
 
         print(f"\nConnected to: {self.llm.get_model()}")
-        print("Type 'exit' to quit.\n")
+        print("Type 'sleep' to quit.\n")
 
         while True:
 
             command = input("You > ").strip()
 
-            if command.lower() == "exit":
-                print("\nGoodbye!\n")
+            if command.lower() == "sleep":
+                print("\nYes sir\n")
                 break
 
             response = self.router.execute(command)
 
             if response:
-                print(f"\nJARVIS > {response}\n")
+                print(f"\nJARVIS > {response}\n")   
