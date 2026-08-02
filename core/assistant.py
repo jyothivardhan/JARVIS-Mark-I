@@ -9,6 +9,7 @@ class Assistant:
         self.llm = LLM()
         self.memory = Memory()
         self.router = CommandRouter(self.llm, self.memory)
+
     def start(self):
 
         print("=" * 40)
@@ -31,7 +32,10 @@ class Assistant:
                 print("\nYes sir\n")
                 break
 
-            response = self.router.execute(command)
+            try:
+                response = self.router.execute(command)
+            except Exception as e:
+                response = f"[ERROR] Something went wrong: {e}"
 
             if response:
-                print(f"\nJARVIS > {response}\n")   
+                print(f"\nJARVIS > {response}\n")

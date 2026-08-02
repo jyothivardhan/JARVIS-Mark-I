@@ -6,7 +6,7 @@ class CommandRouter:
 
     def __init__(self, llm, memory):
         self.llm = llm
-        self.memory= memory
+        self.memory = memory
 
         self.commands = {
             "help": HelpCommand.show,
@@ -24,9 +24,14 @@ class CommandRouter:
     def clear_screen(self):
         SystemCommands.clear()
         return None
-    
+
     def execute(self, command):
-        if command.startswith("remember "):
+        if not command:
+            return None
+
+        lowered = command.strip().lower()
+
+        if lowered.startswith("remember "):
 
             parts = command.split(maxsplit=2)
 
@@ -40,15 +45,14 @@ class CommandRouter:
 
             return f"I'll remember that. ({key} = {value})"
 
-
-        if command.startswith("recall "):
+        if lowered.startswith("recall "):
 
             parts = command.split(maxsplit=1)
 
             if len(parts) < 2:
                 return "Usage: recall <key>"
 
-            key = parts[1]
+            key = parts[1].strip()
 
             value = self.memory.recall(key)
 
@@ -56,9 +60,8 @@ class CommandRouter:
                 return "I don't remember anything for that key."
 
             return value
-        command = command.strip().lower()
 
-        if command in self.commands:
-            return self.commands[command]()
+        if lowered in self.commands:
+            return self.commands[lowered]()
 
         return self.llm.generate(command)

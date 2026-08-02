@@ -5,17 +5,18 @@ Handles all communication between Project JARVIS and the local Ollama model.
 """
 
 import ollama
+from config.settings import MODEL
 
 
 class LLM:
-    def __init__(self, model="qwen3:4b"):
+    def __init__(self, model=None):
         """
         Initialize the LLM.
 
         Args:
-            model (str): Name of the Ollama model.
+            model (str): Name of the Ollama model. Defaults to config/settings.MODEL.
         """
-        self.model = model
+        self.model = model or MODEL
 
         self.system_prompt = """
         You are JARVIS, an intelligent offline AI assistant.
@@ -39,24 +40,25 @@ class LLM:
             return False
 
     def generate(self, prompt):
-        
 
-        response = ollama.chat(
-            model=self.model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": self.system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        )
+        try:
+            response = ollama.chat(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": self.system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+            return response["message"]["content"]
 
-
-        return response["message"]["content"]
+        except Exception as e:
+            return f"[ERROR] Couldn't reach the model ({self.model}): {e}"
 
     def get_model(self):
         """
